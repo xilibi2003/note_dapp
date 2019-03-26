@@ -1,4 +1,8 @@
-## 强制条件
+
+这一个链上记事本 DApp
+
+
+## 前制条件
 
 安装Ganache、 Truffle、 MetaMask
 
