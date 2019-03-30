@@ -11,7 +11,7 @@ contract NoteContract {
     event NewNote(address, string note);
     event ModifyNote(address, uint index);
 
-    function addNote( string memory  note) public {
+    function addNote( string memory note) public {
     
         notes[msg.sender].push(note);
         emit NewNote(msg.sender, note);

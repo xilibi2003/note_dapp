@@ -102,9 +102,6 @@ App = {
       + '" >' 
       + note
       + '</textarea></div>'
-      + '<button class="edit btn btn-default col-sm-1 col-sm-push-1" index = "'
-      + index
-      + '">修改笔记</button>'
       +  '</div> </div>');
       if (index -1 >= 0) {
         App.loadNote(index - 1);
