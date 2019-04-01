@@ -1,6 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
-var mnemonic = "pluck episode bubble crush dress kiss alien output cycle piano powder monster";
+var mnemonic = "...  ...";
 
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
     },
     ropsten: {
       provider: function() {
-        return new HDWalletProvider(mnemonic, "ropsten.infura.io/v3/d3fe47cdbf454c9584113d05a918694f")
+        return new HDWalletProvider(mnemonic, "ropsten.infura.io/v3/d3fe47cdbf454c...")
       },
       network_id: 3
     } 
