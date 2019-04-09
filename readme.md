@@ -1,5 +1,5 @@
 
-## Demo for 如何开发一个以太DApp 
+## Demo for 如何开发一个以太坊DApp 
 
 这一个链上记事本 DApp
 
@@ -41,6 +41,7 @@ npm run dev
   <img src="https://github.com/xilibi2003/Upchain-wallet/blob/master/img/tiny_qrcode.jpeg" width="300">
 </p>
 
-加我备注：DApp， 进入DApp 开发讨论群。
+加我备注：DApp， 进入DApp 开发互助讨论群。
 
-欢迎加入[深入浅出区块链 知识星球](https://t.xiaomiquan.com/RfAu7uj) 成长更快一点。
+欢迎加入[深入浅出区块链 知识星球](https://learnblockchain.cn/images/zsxq.png) 成长更快一点。
+[深入浅出区块链](https://learnblockchain.cn/) - 系统学习区块链，学区块链都在这里，打造最好的区块链技术博客。
