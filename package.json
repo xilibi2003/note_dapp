@@ -1,21 +1,28 @@
 {
-  "name": "pet-shop",
-  "version": "1.0.0",
-  "description": "",
-  "main": "truffle.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "dev": "lite-server",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "lite-server": "^2.3.0"
-  },
-  "dependencies": {
-    "truffle-hdwallet-provider": "^1.0.5"
-  }
+    "name": "pet-shop",
+    "version": "1.0.0",
+    "description": "",
+    "main": "truffle.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "dev": "lite-server",
+        "serve": "webpack-dev-server --hot --content-base ./dist",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "lite-server": "^2.3.0"
+    },
+    "dependencies": {
+        "loom-js": "^1.50.0",
+        "loom-truffle-provider": "^0.13.0",
+        "truffle-hdwallet-provider": "^1.0.5",
+        "web3": "^1.0.0-beta.53",
+        "webpack": "^4.30.0",
+        "webpack-cli": "^3.3.1",
+        "webpack-dev-server": "^3.3.1"
+    }
 }
