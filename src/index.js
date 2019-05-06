@@ -2,10 +2,13 @@ import {
     Client,
     LocalAddress,
     CryptoUtils,
-    LoomProvider
+    LoomProvider,
+    SignedEthTxMiddleware,
+    CachedNonceTxMiddleware,
 } from 'loom-js'
 
 import NoteContract from '../build/contracts/NoteContract.json'
+import { ethers } from 'ethers';
 
 export default class Contract {
     init() {
@@ -15,13 +18,7 @@ export default class Contract {
         this.initContract();
     }
 
-    initWeb3() {
-        this.web3 = new Web3(new LoomProvider(this.client, this.privateKey))
-    }
-
     createClient() {
-        this.privateKey = CryptoUtils.generatePrivateKey()
-        this.publicKey = CryptoUtils.publicKeyFromPrivateKey(this.privateKey)
         let writeUrl = 'ws://127.0.0.1:46658/websocket'
         let readUrl = 'ws://127.0.0.1:46658/queryws'
         let networkId = 'default'
@@ -35,7 +32,26 @@ export default class Contract {
     }
 
     createCurrentUserAddress() {
-        this.account =  LocalAddress.fromPublicKey(this.publicKey).toString();  // "0x8B7A68cfF3725Ca1b682fE575BC891E381138eF8";
+        this.privateKey = CryptoUtils.generatePrivateKey()
+        this.publicKey = CryptoUtils.publicKeyFromPrivateKey(this.privateKey)
+
+        this.account = LocalAddress.fromPublicKey(this.publicKey).toString();  // web3.eth.defaultAccount; // "0x8B7A68cfF3725Ca1b682fE575BC891E381138eF8";
+
+        console.log("account:" + this.account);
+    }
+
+    initWeb3() {
+        const ethersProvider = new ethers.providers.Web3Provider(web3.currentProvider);
+        this.signer = ethersProvider.getSigner()
+
+        var that = this;
+
+        const setupMiddlewareFn = function(client, privateKey) {
+            const publicKey = CryptoUtils.publicKeyFromPrivateKey(privateKey)
+            return [new CachedNonceTxMiddleware(publicKey, client), new SignedEthTxMiddleware(that.signer)]
+        }
+
+        this.web3 = new Web3(new LoomProvider(this.client, this.privateKey, setupMiddlewareFn))
     }
 
     async initContract() {
