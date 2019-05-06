@@ -5,11 +5,10 @@ import {
     LoomProvider
 } from 'loom-js'
 
-import Web3 from 'web3'
 import NoteContract from '../build/contracts/NoteContract.json'
 
-export default class App {
-    async init() {
+export default class Contract {
+    init() {
         this.createClient();
         this.createCurrentUserAddress();
         this.initWeb3();
@@ -36,13 +35,14 @@ export default class App {
     }
 
     createCurrentUserAddress() {
-        this.account = LocalAddress.fromPublicKey(this.publicKey).toString();
+        this.account =  LocalAddress.fromPublicKey(this.publicKey).toString();  // "0x8B7A68cfF3725Ca1b682fE575BC891E381138eF8";
     }
 
-
-    initContract() {
-
+    async initContract() {
         const networkId = "13654820909954";
+
+        console.log("networkId:" + networkId );
+        console.log(NoteContract)
 
         this.currentNetwork = NoteContract.networks[networkId]
         if (!this.currentNetwork) {
@@ -50,31 +50,30 @@ export default class App {
         }
         const ABI = NoteContract.abi;
 
-        this.noteIntance = new this.web3.eth.Contract(ABI, this.currentNetwork.address, {
-            from: this.account
-        })
+        var MyContract = this.web3.eth.contract(ABI);
 
-        console.log(this.noteIntance)
+        this.noteIntance = MyContract.at(this.currentNetwork.address);
 
-        // this.noteIntance.events.NewNote(function(err, result) {
-        //     console.log("reload");
-        //     window.location.reload();
-        // });
+        //  Loom Provider not support yet .
+        this.event = this.noteIntance.NewNote()
+        this.event.watch(function(err, result) {
+            console.log(" watch event: " + err);
+        });
 
         this.bindEvents();
         this.getNotes();
     }
 
     getNotes() {
-        this.noteIntance.methods.getNotesLen(this.account).call({ from: this.currentUserAddress }).then(function(len) {
+        var that = this;
+
+        $("#notes").empty();
+        this.noteIntance.getNotesLen(this.account, function(err, len) {
             $("#loader").hide();
             console.log(len + " 条笔记");
-            this.noteLength = len;
             if (len > 0) {
-                this.loadNote(len - 1);
+                that.loadNote(len - 1);
             }
-        }).catch(function(err) {
-            console.log(err.message);
         });
     }
 
@@ -90,8 +89,9 @@ export default class App {
     }
 
     loadNote(index) {
+        var that = this;
 
-        this.noteIntance.methods.notes(this.account, index).call().then(function(note) {
+        this.noteIntance.notes(this.account, index, function(err, note) {
             $("#notes").append(
                 '<div class="form-horizontal"> <div class="form-group"><div class="col-sm-8 col-sm-push-1 ">' +
                 ' <textarea class="form-control" id="note' +
@@ -101,45 +101,38 @@ export default class App {
                 '</textarea></div>' +
                 '</div> </div>');
             if (index - 1 >= 0) {
-                this.loadNote(index - 1);
+                that.loadNote(index - 1);
             } else {
-                this.adjustHeight();
+                that.adjustHeight();
             }
-        }).catch(function(err) {
-            console.log(err.message);
         });
-
     }
 
     bindEvents() {
+        var that = this;
         $("#add_new").on('click', function() {
-            console.log(" click ");
+             console.log(" click add new ");
+
             $("#loader").show();
-
-            this.noteIntance.methods.addNote($("#new_note").val()).send({ from: this.currentUserAddress }).then(function() {
-                this.watchChange();
+            that.noteIntance.addNote($("#new_note").val(), { from: that.account } , function(err, result) {
+                console.log( " addNote: callback:" + err);
+                console.log("result hash:" + result);
+                that.getNotes()
             });
-        });
 
-        $("#notes").on('click', "button", function() {
+
+        } );
+
+        $("#notes").on('click', "button", async function() {
             var cindex = $(this).attr("index");
             var noteid = "#note" + cindex
             var note = $(noteid).val();
             console.log(note);
 
-            this.noteIntance.methods.modifyNote(this.account, cindex, note).send().then(
-                function(result) {
-                    return this.getNotes();
-                }
+            await this.noteIntance.modifyNote(this.account, cindex, note, function(err, result) {
+                     return this.getNotes();
+                 }
             );
-        });
-    }
-
-    watchChange() {
-        var infoEvent = this.noteIntance.NewNote();
-        return infoEvent.watch(function(err, result) {
-            console.log("reload");
-            window.location.reload();
         });
     }
 
@@ -153,9 +146,8 @@ export default class App {
 }
 
 $(function() {
-    $(window).load(function() {
-
-        var app = new App();
-        app.init();
+    $(window).load(async function() {
+        var app = new Contract();
+        await app.init();
     });
 });
