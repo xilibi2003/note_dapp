@@ -1,6 +1,6 @@
 var HDWalletProvider = require("truffle-hdwallet-provider");
 
-var mnemonic = "...  ...";
+var mnemonic = "...";
 
 
 module.exports = {
@@ -17,6 +17,13 @@ module.exports = {
         return new HDWalletProvider(mnemonic, "ropsten.infura.io/v3/d3fe47cdbf454c...")
       },
       network_id: 3
-    } 
+    },
+    sokol: {
+      provider: function() {
+            return new HDWalletProvider(mnemonic, "https://sokol.poa.network")
+      },
+      network_id: 77,
+      gasPrice: 1000000000
+    }
   }
 };
